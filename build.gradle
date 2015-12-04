@@ -34,6 +34,10 @@ minecraft {
 repositories {
     jcenter()
     mavenLocal()
+    maven {
+        name 'beastcube-repo'
+        url 'http://repo.patzleiner.net/artifactory/libs-snapshot'
+    }
 }
 
 dependencies {
