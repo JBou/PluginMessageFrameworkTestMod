@@ -1,0 +1,16 @@
+[
+{
+  "modid": "pmftestmod",
+  "name": "PluginMessageFramework TestMod",
+  "description": "PluginMessageFramework Test Mod",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["JBou"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

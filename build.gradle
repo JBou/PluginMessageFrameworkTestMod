@@ -1,0 +1,117 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.2"
+    id "com.github.johnrengelman.shadow" version "1.2.2"
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+version = "1.0.0-SNAPSHOT"
+group = "com.jbou.pmftestmod"
+archivesBaseName = "pmftestmod"
+
+minecraft {
+    version = minecraft_version + "-" + forge_version
+    runDir = "run"
+
+    // the mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   snapshot are built nightly.
+    // stable_#            stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // simply re-run your setup task after changing the mappings to update your workspace.
+    mappings = 'stable_18'
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+
+    replaceIn "com/example/examplemod/ExampleMod.java"
+    replace '@MOD_VERSION@', project.version
+
+}
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-jdk14:1.7.13'
+    compile 'org.slf4j:slf4j-api:1.7.13'
+    compile 'com.ikeirnez.pluginmessageframework:pmf-forge:1.0.0-SNAPSHOT'
+    compile 'com.ikeirnez.pluginmessageframework:pmf-core:1.0.0-SNAPSHOT'
+}
+
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+//Only make shaded jar
+tasks.jar.dependsOn "shadowJar"
+tasks.jar.enabled = false
+
+shadowJar {
+    classifier = ''
+    dependencies {
+        include dependency('com.ikeirnez.pluginmessageframework:pmf-core')
+        include dependency('com.ikeirnez.pluginmessageframework:pmf-forge')
+        include dependency('org.slf4j:slf4j-api')
+        include dependency('org.slf4j:slf4j-jdk14')
+    }
+    relocate 'org.slf4j', 'com.example.examplemod.org.slf4j'
+    return true
+}
+
+task deobfJar(type: ShadowJar) {
+    group = "shadow"
+    from sourceSets.main.output
+    configurations = [project.configurations.runtime]
+    classifier = 'dev'
+
+    relocate 'org.slf4j', 'com.example.examplemod.org.slf4j'
+
+}
+
+sourceJar {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+tasks.build.dependsOn('sourceJar', 'deobfJar')
+
+artifacts {
+    archives deobfJar
+    archives sourceJar
+    archives jar
+}
+
+publishing {
+    publications {
+        specialJar(MavenPublication) {
+            from components.java
+            artifact sourceJar {
+                classifier "sources"
+            }
+            artifact deobfJar {
+                classifier "dev"
+
+            }
+        }
+    }
+}
