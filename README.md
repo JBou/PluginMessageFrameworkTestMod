@@ -1,7 +1,6 @@
 PluginMessageFrameworkTestMod [![Build Status](http://ci.patzleiner.net/job/PluginMessageFrameworkTestMod/badge/icon)](http://ci.patzleiner.net/job/PluginMessageFrameworkTestMod/)
 ==========
 
--------------------------------------------
 Source installation information for modders
 -------------------------------------------
 This code follows the Minecraft Forge installation methodology. It will apply
