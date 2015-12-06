@@ -1,3 +1,6 @@
+PluginMessageFrameworkTestMod [![Build Status](http://ci.patzleiner.net/job/PluginMessageFrameworkTestMod/badge/icon)](http://ci.patzleiner.net/job/PluginMessageFrameworkTestMod/)
+==========
+
 -------------------------------------------
 Source installation information for modders
 -------------------------------------------
